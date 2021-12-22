@@ -1,5 +1,5 @@
 from model.dataset import ImageDataset
-from model.network import SimpleDetector, DeepDetector, VGG11
+from model.network import SimpleDetector, DeepDetector, VGG11, ResnetObjectDetector
 from model import config
 import torch
 from torch.utils.data import DataLoader
@@ -10,7 +10,6 @@ from collections import defaultdict
 import random
 import time
 import os
-
 
 if __name__ == '__main__':
     # initialize the list of data (images), class labels, target bounding
@@ -47,8 +46,8 @@ if __name__ == '__main__':
                               shuffle=True, num_workers=config.NB_WORKERS,
                               pin_memory=config.PIN_MEMORY)
     val_loader = DataLoader(val_dataset, batch_size=config.BATCH_SIZE,
-                              shuffle=True, num_workers=config.NB_WORKERS,
-                              pin_memory=config.PIN_MEMORY)
+                            shuffle=True, num_workers=config.NB_WORKERS,
+                            pin_memory=config.PIN_MEMORY)
     test_loader = DataLoader(test_dataset, batch_size=config.BATCH_SIZE,
                              num_workers=config.NB_WORKERS,
                              pin_memory=config.PIN_MEMORY)
@@ -64,9 +63,9 @@ if __name__ == '__main__':
 
     # create our custom object detector model and upload to the current device
     print("**** initializing network...")
-    #object_detector = SimpleDetector(len(config.LABELS)).to(config.DEVICE)
+    # object_detector = SimpleDetector(len(config.LABELS)).to(config.DEVICE)
     object_detector = DeepDetector(len(config.LABELS)).to(config.DEVICE)
-    #object_detector = VGG11(len(config.LABELS)).to(config.DEVICE)
+    # object_detector = VGG11(len(config.LABELS)).to(config.DEVICE)
 
     # initialize the optimizer, compile the model, and show the model summary
     optimizer = Adam(object_detector.parameters(), lr=config.INIT_LR)
@@ -108,6 +107,7 @@ if __name__ == '__main__':
 
         # return sample-level averages of the loss and accuracy
         return total_loss / len(loader.dataset), correct / len(loader.dataset)
+
 
     # loop over epochs
     print("**** training the network...")

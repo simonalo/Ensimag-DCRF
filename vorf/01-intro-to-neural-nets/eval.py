@@ -22,7 +22,7 @@ results_labels = dict()
 
 for mode, csv_file in [['train', config.TRAIN_PATH],
                        ['validation', config.VAL_PATH],
-                       ['test', config.TEST_PATH],]:
+                       ['test', config.TEST_PATH]]:
     data = []
     assert(csv_file.endswith('.csv'))
 
@@ -90,4 +90,3 @@ for mode in ['train', 'validation', 'test']:
         print(f'\t\t {numpy.sum(results_labels[mode][label_str])} over '
               f'{len(results_labels[mode][label_str])} samples')
         # TODO: display bounding box metrics
-
