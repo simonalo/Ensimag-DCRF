@@ -64,8 +64,9 @@ if __name__ == '__main__':
     # create our custom object detector model and upload to the current device
     print("**** initializing network...")
     # object_detector = SimpleDetector(len(config.LABELS)).to(config.DEVICE)
-    object_detector = ResnetObjectDetector(len(config.LABELS)).to(config.DEVICE)
+    # object_detector = DeepDetector(len(config.LABELS)).to(config.DEVICE)
     # object_detector = VGG11(len(config.LABELS)).to(config.DEVICE)
+    object_detector = ResnetObjectDetector(len(config.LABELS)).to(config.DEVICE)
 
     # initialize the optimizer, compile the model, and show the model summary
     optimizer = Adam(object_detector.parameters(), lr=config.INIT_LR)
