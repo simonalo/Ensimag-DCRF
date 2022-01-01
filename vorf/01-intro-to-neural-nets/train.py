@@ -83,7 +83,7 @@ if __name__ == '__main__':
         # loop over batches of the training set
         for batch in loader:
             # send the inputs and training annotations to the device
-            images, *bbox, labels = [datum.to(config.DEVICE) for datum in batch]
+            images, bbox, labels = [datum.to(config.DEVICE) for datum in batch]
 
             # perform a forward pass and calculate the training loss
             predict, bbox_predict = object_detector(images)

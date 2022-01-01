@@ -56,11 +56,10 @@ class SimpleDetector(nn.Module):
         )
         self.regressor.apply(init_weights)
 
-
-def forward(self, x):
-    # get features from input then run them through the classifier
-    x = self.features(x)
-    return self.classifier(x), self.regressor(x)
+    def forward(self, x):
+        # get features from input then run them through the classifier
+        x = self.features(x)
+        return self.classifier(x), self.regressor(x)
 
 
 class DeepDetector(nn.Module):
