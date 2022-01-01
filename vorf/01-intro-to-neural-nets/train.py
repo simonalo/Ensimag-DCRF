@@ -33,7 +33,7 @@ if __name__ == '__main__':
     train_data = data[:cut_val]
     val_data = data[cut_val:cut_test]
     test_data = data[cut_test:]
-    print(train_data)
+
     # create Torch datasets for our training, validation and test data
     train_dataset = ImageDataset(train_data, transforms=config.TRANSFORMS)
     val_dataset = ImageDataset(val_data, transforms=config.TRANSFORMS)
@@ -83,7 +83,7 @@ if __name__ == '__main__':
         # loop over batches of the training set
         for batch in loader:
             # send the inputs and training annotations to the device
-            images, labels, bbox = [datum.to(config.DEVICE) for datum in batch]
+            images, *bbox, labels = [datum.to(config.DEVICE) for datum in batch]
 
             # perform a forward pass and calculate the training loss
             predict, bbox_predict = object_detector(images)
