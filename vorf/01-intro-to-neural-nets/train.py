@@ -63,10 +63,10 @@ if __name__ == '__main__':
 
     # create our custom object detector model and upload to the current device
     print("**** initializing network...")
-    # object_detector = SimpleDetector(len(config.LABELS)).to(config.DEVICE)
+    object_detector = SimpleDetector(len(config.LABELS)).to(config.DEVICE)
     # object_detector = DeepDetector(len(config.LABELS)).to(config.DEVICE)
     # object_detector = VGG11(len(config.LABELS)).to(config.DEVICE)
-    object_detector = ResnetObjectDetector(len(config.LABELS)).to(config.DEVICE)
+    # object_detector = ResnetObjectDetector(len(config.LABELS)).to(config.DEVICE)
 
     # initialize the optimizer, compile the model, and show the model summary
     optimizer = Adam(object_detector.parameters(), lr=config.INIT_LR)
@@ -83,14 +83,12 @@ if __name__ == '__main__':
         # loop over batches of the training set
         for batch in loader:
             # send the inputs and training annotations to the device
-            # TODO: modify line below to get bbox data
-            images, labels = [datum.to(config.DEVICE) for datum in batch]
+            images, labels, bbox = [datum.to(config.DEVICE) for datum in batch]
 
             # perform a forward pass and calculate the training loss
-            predict = object_detector(images)
+            predict, bbox_predict = object_detector(images)
 
-            # TODO: add loss term for bounding boxes
-            bbox_loss = 0
+            bbox_loss = fun.mse_loss(bbox_predict, bbox, reduction='sum')
             class_loss = fun.cross_entropy(predict, labels, reduction="sum")
             batch_loss = config.BBOXW * bbox_loss + config.LABELW * class_loss
 
@@ -168,7 +166,6 @@ if __name__ == '__main__':
     plt.style.use("ggplot")
     plt.figure()
 
-    # TODO: build and save matplotlib plot
     plt.plot(plots['Training loss'], label='Training loss')
     plt.plot(plots['Training class accuracy'], label='Training accuracy')
 
@@ -178,4 +175,4 @@ if __name__ == '__main__':
     plt.legend(loc='center right')
 
     # save the training plot
-    plt.savefig("output/9.1.10_no_batch_no_dropout.png")
+    plt.savefig("output/last_plot.png")

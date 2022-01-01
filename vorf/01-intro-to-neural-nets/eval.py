@@ -29,11 +29,11 @@ for mode, csv_file in [['train', config.TRAIN_PATH],
     print(f"Evaluating {mode} set...")
     # loop over CSV file rows (filename, startX, startY, endX, endY, label)
     for row in open(csv_file).read().strip().split("\n"):
-        # TODO: read bounding box annotations
-        filename, _, _, _, _, label = row.split(',')
+        # Read bounding box annotations
+        filename, startX, startY, endX, endY, label = row.split(',')
         filename = os.path.join(config.IMAGES_PATH, label, filename)
-        # TODO: add bounding box annotations here
-        data.append((filename, None, None, None, None, label))
+        # Add bounding box annotations here
+        data.append((filename, startX, startY, endX, endY, label))
 
     print(f"Evaluating {len(data)} samples...")
 
@@ -58,14 +58,18 @@ for mode, csv_file in [['train', config.TRAIN_PATH],
         image = image.unsqueeze(0)
 
         # predict the bounding box of the object along with the class label
-        label_predictions = model(image)
+        label_predictions, bbox_predictions = model(image)
 
         # determine the class label with the largest predicted probability
         label_predictions = torch.nn.Softmax(dim=-1)(label_predictions)
         most_likely_label = label_predictions.argmax(dim=-1).cpu()
         label = config.LABELS[most_likely_label]
 
-        # TODO: denormalize bounding box from (0,1)x(0,1) to (0,w)x(0,h)
+        # Denormalize bounding box from (0,1)x(0,1) to (0,w)x(0,h)
+        bbox_startX = bbox_predictions[0][0] * w
+        bbox_startY = bbox_predictions[0][1] * h
+        bbox_endX = bbox_predictions[0][2] * w
+        bbox_endY = bbox_predictions[0][3] * h
 
         # Compare to gt data
         results_labels[mode]['all'].append(label == gt_label)
