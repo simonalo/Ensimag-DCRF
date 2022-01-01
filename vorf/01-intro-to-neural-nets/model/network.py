@@ -10,6 +10,7 @@ def init_weights(m):
 
 class SimpleDetector(nn.Module):
     """ VGG11 inspired feature extraction layers """
+
     def __init__(self, nb_classes):
         """ initialize the network """
         super().__init__()
@@ -57,14 +58,14 @@ class SimpleDetector(nn.Module):
 
 
 def forward(self, x):
-        # get features from input then run them through the classifier
-        x = self.features(x)
-        # TODO: compute and add the bounding box regressor term
-        return self.classifier(x)
+    # get features from input then run them through the classifier
+    x = self.features(x)
+    return self.classifier(x), self.regressor(x)
 
 
 class DeepDetector(nn.Module):
     """ VGG11 inspired feature extraction layers """
+
     def __init__(self, nb_classes):
         """ initialize the network """
         super().__init__()
@@ -118,6 +119,7 @@ class DeepDetector(nn.Module):
 
 class VGG11(nn.Module):
     """ VGG11 inspired feature extraction layers """
+
     def __init__(self, nb_classes):
         """ initialize the network """
         super().__init__()
@@ -192,6 +194,7 @@ class VGG11(nn.Module):
 
 class ResnetObjectDetector(nn.Module):
     """ Resnet18 based feature extraction layers """
+
     def __init__(self, nb_classes):
         super().__init__()
         # copy resnet up to the last conv layer prior to fc layers, and flatten
