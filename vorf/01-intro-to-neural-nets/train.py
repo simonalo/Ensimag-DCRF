@@ -33,7 +33,7 @@ if __name__ == '__main__':
     train_data = data[:cut_val]
     val_data = data[cut_val:cut_test]
     test_data = data[cut_test:]
-
+    print(train_data)
     # create Torch datasets for our training, validation and test data
     train_dataset = ImageDataset(train_data, transforms=config.TRANSFORMS)
     val_dataset = ImageDataset(val_data, transforms=config.TRANSFORMS)
