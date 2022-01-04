@@ -107,13 +107,20 @@ class DeepDetector(nn.Module):
         self.classifier.apply(init_weights)
 
         # create regressor path for bounding box coordinates prediction
-        # TODO: take inspiration from above without dropouts
+        self.regressor = nn.Sequential(
+            nn.Linear(128 * 3 * 3, 32),
+            nn.ReLU(),
+            nn.Linear(32, 16),
+            nn.ReLU(),
+            nn.Linear(16, 4),
+            nn.Sigmoid()
+        )
+        self.regressor.apply(init_weights)
 
     def forward(self, x):
         # get features from input then run them through the classifier
         x = self.features(x)
-        # TODO: compute and add the bounding box regressor term
-        return self.classifier(x)
+        return self.classifier(x), self.regressor(x)
 
 
 class VGG11(nn.Module):
@@ -182,13 +189,20 @@ class VGG11(nn.Module):
         self.classifier.apply(init_weights)
 
         # create regressor path for bounding box coordinates prediction
-        # TODO: take inspiration from above without dropouts
+        self.regressor = nn.Sequential(
+            nn.Linear(512 * 7 * 7, 32),
+            nn.ReLU(),
+            nn.Linear(32, 16),
+            nn.ReLU(),
+            nn.Linear(16, 4),
+            nn.Sigmoid()
+        )
+        self.regressor.apply(init_weights)
 
     def forward(self, x):
         # get features from input then run them through the classifier
         x = self.features(x)
-        # TODO: compute and add the bounding box regressor term
-        return self.classifier(x)
+        return self.classifier(x), self.regressor(x)
 
 
 class ResnetObjectDetector(nn.Module):
@@ -216,11 +230,17 @@ class ResnetObjectDetector(nn.Module):
         )
 
         # create regressor path for bounding box coordinates prediction
-        # TODO: take inspiration from above without dropouts
+        self.regressor = nn.Sequential(
+            nn.Linear(512, 32),
+            nn.ReLU(),
+            nn.Linear(32, 16),
+            nn.ReLU(),
+            nn.Linear(16, 4),
+            nn.Sigmoid()
+        )
+        self.regressor.apply(init_weights)
 
     def forward(self, x):
-        # pass the inputs through the base model and then obtain
-        # predictions from two different branches of the network
+        # get features from input then run them through the classifier
         x = self.features(x)
-        # TODO: compute and add the bounding box regressor term
-        return self.classifier(x)
+        return self.classifier(x), self.regressor(x)

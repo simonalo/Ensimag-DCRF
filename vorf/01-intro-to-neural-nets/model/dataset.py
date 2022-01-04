@@ -24,10 +24,10 @@ class ImageDataset(Dataset):
         # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         # scale bounding box coordinates relative to dimensions of input image
-        bbox_startX = float(startX) * w
-        bbox_startY = float(startY) * h
-        bbox_endX = float(endX) * w
-        bbox_endY = float(endY) * h
+        bbox_startX = float(startX) / w
+        bbox_startY = float(startY) / h
+        bbox_endX = float(endX) / w
+        bbox_endY = float(endY) / h
 
         # normalize label in (0, 1, 2) and convert to tensor
         label = torch.tensor(config.LABELS.index(label))

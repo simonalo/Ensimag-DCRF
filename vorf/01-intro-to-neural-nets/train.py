@@ -28,8 +28,8 @@ if __name__ == '__main__':
     random.seed(0)
     random.shuffle(data)
 
-    cut_val = int(0.10 * len(data))
-    cut_test = int(0.20 * len(data))
+    cut_val = int(0.8 * len(data))
+    cut_test = int(0.9 * len(data))
     train_data = data[:cut_val]
     val_data = data[cut_val:cut_test]
     test_data = data[cut_test:]
@@ -63,10 +63,10 @@ if __name__ == '__main__':
 
     # create our custom object detector model and upload to the current device
     print("**** initializing network...")
-    object_detector = SimpleDetector(len(config.LABELS)).to(config.DEVICE)
+    # object_detector = SimpleDetector(len(config.LABELS)).to(config.DEVICE)
     # object_detector = DeepDetector(len(config.LABELS)).to(config.DEVICE)
     # object_detector = VGG11(len(config.LABELS)).to(config.DEVICE)
-    # object_detector = ResnetObjectDetector(len(config.LABELS)).to(config.DEVICE)
+    object_detector = ResnetObjectDetector(len(config.LABELS)).to(config.DEVICE)
 
     # initialize the optimizer, compile the model, and show the model summary
     optimizer = Adam(object_detector.parameters(), lr=config.INIT_LR)
@@ -87,7 +87,7 @@ if __name__ == '__main__':
 
             # perform a forward pass and calculate the training loss
             predict, bbox_predict = object_detector(images)
-
+            
             bbox_loss = fun.mse_loss(bbox_predict, bbox, reduction='sum')
             class_loss = fun.cross_entropy(predict, labels, reduction="sum")
             batch_loss = config.BBOXW * bbox_loss + config.LABELW * class_loss

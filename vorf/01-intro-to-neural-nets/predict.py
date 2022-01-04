@@ -7,7 +7,7 @@ import cv2
 # load our object detector, set it evaluation mode, and label
 # encoder from disk
 print("**** loading object detector...")
-model = torch.load(config.LAST_MODEL_PATH).to(config.DEVICE)
+model = torch.load(config.BEST_MODEL_PATH).to(config.DEVICE)
 model.eval()
 
 data = []
@@ -58,16 +58,17 @@ for filename, gt_start_x, gt_start_y, gt_end_x, gt_end_y, gt_label in data:
         cv2.putText(display, 'gt ' + gt_label, (0, h - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 0,  0), 2)
         # Display ground truth bounding box in blue
-        cv2.rectangle(display, (int(gt_start_x), int(gt_start_y)), (int(gt_end_x), int(gt_end_y)), (0, 0, 255), 2)
+        cv2.rectangle(display, (int(gt_start_x), int(gt_start_y)), (int(gt_end_x), int(gt_end_y)), (255, 0, 0), 2)
 
     # draw the predicted bounding box and class label on the image
     cv2.putText(display, label, (0, 15),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 255, 0), 2)
     # Display predicted bounding box
-    cv2.rectangle(display, (int(bbox_startX), int(bbox_startY)), (int(bbox_endX), int(bbox_endY)), (255, 0, 0), 2)
+    cv2.rectangle(display, (int(bbox_startX), int(bbox_startY)), (int(bbox_endX), int(bbox_endY)), (0, 0, 255), 2)
 
     if label != gt_label or not bad_pred:
         # show the output image
+        print(bbox_predictions)
         cv2.imshow("Output", display)
         key = cv2.waitKey(0)
         if key == 27:
